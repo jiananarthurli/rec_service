@@ -24,24 +24,38 @@ def submit(request):
 
     result = candidate_rate.sort_values(ascending=False).index.values
     recommendations = []
+    response_dict = {'movies': []}
+
     for i in result:
-        if len(recommendations) >= rec:
+        if len(response_dict['movies']) >= rec:
             break
         if str(int(i)) not in picks:
-            recommendations.append(str(int(i)))
+            m = str(int(i))  # movieId in string
+            movie_object = MovieList.objects.get(movieid=m)
+            poster_path = get_poster(movie_object.tmdbid)
+            if poster_path != 'None':
+                response_dict['movies'].append(
+                    {'movieId': m,
+                     'title': movie_object.title,
+                     'year': movie_object.year,
+                     'imdbId': movie_object.imdbid,
+                     'tmdbId': movie_object.tmdbid,
+                     'poster': poster_path
+                     }
+                )
+            recommendations.append(m)
 
-    response_dict = {'movies': []}
-    for m in recommendations:
-        movie_object = MovieList.objects.get(movieid=m)
-        response_dict['movies'].append(
-            {'movieId': m,
-             'title': movie_object.title,
-             'year': movie_object.year,
-             'imdbId': movie_object.imdbid,
-             'tmdbId': movie_object.tmdbid,
-             'poster': get_poster(movie_object.tmdbid)
-             }
-        )
+    # for m in recommendations:
+    #     movie_object = MovieList.objects.get(movieid=m)
+    #     response_dict['movies'].append(
+    #         {'movieId': m,
+    #          'title': movie_object.title,
+    #          'year': movie_object.year,
+    #          'imdbId': movie_object.imdbid,
+    #          'tmdbId': movie_object.tmdbid,
+    #          'poster': get_poster(movie_object.tmdbid)
+    #          }
+    #     )
 
     response = json.dumps(response_dict)
     return HttpResponse(response)
