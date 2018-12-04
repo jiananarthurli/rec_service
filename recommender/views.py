@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from recommender.apps import movie_sim_beta, movie_norm, k_nearest
 import json
 import pandas as pd
-
+from movie_query.models import MovieList
+from movie_query.views import get_poster
 
 def submit(request):
 
@@ -31,8 +32,16 @@ def submit(request):
 
     response_dict = {'movies': []}
     for m in recommendations:
+        movie_object = MovieList.objects.get(movieid=m)
         response_dict['movies'].append(
-            {'movieId': m}
+            {'movieId': m,
+             'title': movie_object.title,
+             'year': movie_object.year,
+             'imdbId': movie_object.imdbid,
+             'tmdbId': movie_object.tmdbid,
+             'poster': get_poster(movie_object.tmdbid)
+             }
         )
+
     response = json.dumps(response_dict)
     return HttpResponse(response)
