@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': 'recsys',
         'USER': 'arthurli',
         'PASSWORD': 'bigdata',
-        'HOST': '68.183.127.53',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
