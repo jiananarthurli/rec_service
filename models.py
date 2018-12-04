@@ -1,6 +1,3 @@
-movie_sim_beta loaded
-movie_norm loaded
-k_nearest loaded
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
@@ -123,7 +120,7 @@ class DjangoSession(models.Model):
 
 class MovieList(models.Model):
     index = models.BigIntegerField(blank=True, null=True)
-    movieid = models.BigIntegerField(db_column='movieId', blank=True, null=True)  # Field name made lowercase.
+    movieid = models.BigIntegerField(primary_key=True, db_column='movieId', blank=True, null=True)  # Field name made lowercase.
     title = models.TextField(blank=True, null=True)
     genres = models.TextField(blank=True, null=True)
     year = models.TextField(blank=True, null=True)

@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'recommender.apps.RecommenderConfig'
+    'recommender.apps.RecommenderConfig',
+    'movie_query.apps.MovieQueryConfig',
 ]
 
 MIDDLEWARE = [
@@ -87,8 +88,8 @@ DATABASES = {
         'NAME': 'recsys',
         'USER': 'arthurli',
         'PASSWORD': 'bigdata',
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': '68.183.127.53',
+        'PORT': '5432',
     }
 }
 
