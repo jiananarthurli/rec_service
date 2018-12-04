@@ -31,5 +31,5 @@ def get_poster(tmdbId):
         newId = tmdb_search(movie_object.title)
         poster_path = tmdb_query(newId)['poster_path']
 
-    return 'https://image.tmdb.org/t/p/w500/' + poster_path
+    return 'https://image.tmdb.org/t/p/w500' + poster_path
 
