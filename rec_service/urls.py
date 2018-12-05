@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from recommender.views import submit
 from django.conf.urls import url, include
+
+from recommender.views import submit
+from get_random.views import get_random
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +27,8 @@ urlpatterns = [
 
 urlpatterns += [
     url(r'^submit/$', submit, name='submit'),
+]
+
+urlpatterns += [
+    url(r'^get-random/$', get_random, name='get_random'),
 ]

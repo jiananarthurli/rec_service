@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'recommender.apps.RecommenderConfig',
     'movie_query.apps.MovieQueryConfig',
+    'get_random.apps.GetRandomConfig',
 ]
 
 MIDDLEWARE = [

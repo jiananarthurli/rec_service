@@ -6,6 +6,25 @@ import pandas as pd
 from movie_query.models import MovieList
 from movie_query.views import get_poster
 
+
+def movie_builder(movieId):
+
+    movie_object = MovieList.objects.get(movieid=movieId)
+    poster_path = get_poster(movie_object.tmdbid)
+    if poster_path != 'None':
+        result = {'movieId': movieId,
+                  'title': movie_object.title,
+                  'year': movie_object.year,
+                  'imdbId': movie_object.imdbid,
+                  'tmdbId': movie_object.tmdbid,
+                  'poster': poster_path
+                  }
+    else:
+        result = 'None'
+
+    return result
+
+
 def submit(request):
 
     rec = 10
@@ -23,27 +42,16 @@ def submit(request):
     candidate_rate = movie_sim_beta.loc[candidate_index, picks].sum(axis=1) / movie_norm[candidate_index]
 
     result = candidate_rate.sort_values(ascending=False).index.values
-    recommendations = []
-    response_dict = {'movies': []}
 
+    response_dict = {'movies': []}
     for i in result:
         if len(response_dict['movies']) >= rec:
             break
         if str(int(i)) not in picks:
             m = str(int(i))  # movieId in string
-            movie_object = MovieList.objects.get(movieid=m)
-            poster_path = get_poster(movie_object.tmdbid)
-            if poster_path != 'None':
-                response_dict['movies'].append(
-                    {'movieId': m,
-                     'title': movie_object.title,
-                     'year': movie_object.year,
-                     'imdbId': movie_object.imdbid,
-                     'tmdbId': movie_object.tmdbid,
-                     'poster': poster_path
-                     }
-                )
-            recommendations.append(m)
+            movie_dict = movie_builder(m)
+            if movie_dict != 'None':
+                response_dict['movies'].append(movie_dict)
 
     response = json.dumps(response_dict)
     return HttpResponse(response)
