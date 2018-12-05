@@ -41,7 +41,9 @@ def get_poster(tmdbId):
 
     if tmdb_r != 'None':
         poster_path = tmdb_r['poster_path']
-    else:
+        if poster_path is None:  # this happens when the poster path in the api response is None.
+            return 'None'
+    else:  # use searching to find the tmdbId instead
         movie_object = MovieList.objects.get(tmdbid=tmdbId)
         movie_title = movie_object.title
         newId = tmdb_search(movie_title)
