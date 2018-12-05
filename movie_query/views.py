@@ -36,7 +36,7 @@ def get_poster(tmdbId):
     if tmdbId == 'nan':  # if the tmdbId is nan, especially when get_random is called
         return 'None'
 
-    prefix = 'https://image.tmdb.org/t/p/w500'
+    prefix = 'https://image.tmdb.org/t/p/w185'
     tmdb_r = tmdb_query(tmdbId)
 
     if tmdb_r != 'None':
