@@ -33,6 +33,8 @@ def submit(request):
     picks = movie_list_str.split(',')
 
     candidate = set()
+    picks = set(picks)
+
     for p in picks:
         for i in k_nearest[p].values:
             candidate.add(i)
