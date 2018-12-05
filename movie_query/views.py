@@ -1,9 +1,9 @@
 from django.shortcuts import render
 import requests
 from movie_query.models import MovieList
-from bs4 import BeautifulSoup
-import json
-import re
+# from bs4 import BeautifulSoup
+# import json
+# import re
 
 
 def tmdb_query(tmdbId):
@@ -32,6 +32,9 @@ def tmdb_search(title):
 
 
 def get_poster(tmdbId):
+
+    if tmdbId == 'nan':  # if the tmdbId is nan, especially when get_random is called
+        return 'None'
 
     prefix = 'https://image.tmdb.org/t/p/w500'
     tmdb_r = tmdb_query(tmdbId)
