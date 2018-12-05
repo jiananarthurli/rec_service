@@ -30,6 +30,8 @@ def submit(request):
     rec = 10
 
     movie_list_str = request.GET['movies']
+    if movie_list_str[-1] == ',':
+        movie_list_str = movie_list_str[:-1]
     picks = movie_list_str.split(',')
 
     candidate = set()
