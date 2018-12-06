@@ -48,8 +48,10 @@ def get_poster(tmdbId, poster_size):
 
     if tmdb_r != 'None':
         poster_path = tmdb_r['poster_path']
-        if poster_path is None:  # this happens when the poster path in the api response is None.
+
+        if poster_path is None:  # this happens when the poster path is None in the tmdb response.
             return 'None'
+
     else:  # use searching to find the tmdbId instead
         movie_object = MovieList.objects.get(tmdbid=tmdbId)
         movie_title = movie_object.title
@@ -62,6 +64,14 @@ def get_poster(tmdbId, poster_size):
             if tmdb_r == 'None':  # if for any reason the new id could not be found
                 return 'None'
             poster_path = tmdb_r['poster_path']
+
+            if poster_path is None:  # this happens when the poster path is None in the tmdb response.
+                return 'None'
+
+    try:
+        str(poster_path)
+    except TypeError:
+        return 'None'
 
     return prefix + poster_path
 
