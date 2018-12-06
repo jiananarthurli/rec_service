@@ -7,10 +7,10 @@ from movie_query.models import MovieList
 from movie_query.views import get_poster
 
 
-def movie_builder(movieId):
+def movie_builder(movieId, poster_size):
 
     movie_object = MovieList.objects.get(movieid=movieId)
-    poster_path = get_poster(movie_object.tmdbid)
+    poster_path = get_poster(movie_object.tmdbid, poster_size)
     if poster_path != 'None':
         result = {'movieId': movieId,
                   'title': movie_object.title,
@@ -29,6 +29,7 @@ def submit(request):
 
     rec = 10
 
+    poster_size = request.GET['size']
     movie_list_str = request.GET['movies']
     if movie_list_str[-1] == ',':
         movie_list_str = movie_list_str[:-1]
@@ -53,7 +54,7 @@ def submit(request):
             break
         if str(int(i)) not in picks:
             m = str(int(i))  # movieId in string
-            movie_dict = movie_builder(m)
+            movie_dict = movie_builder(m, poster_size)
             if movie_dict != 'None':
                 response_dict['movies'].append(movie_dict)
 

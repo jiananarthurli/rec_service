@@ -31,12 +31,19 @@ def tmdb_search(title):
         return str(r_results[0]['id'])
 
 
-def get_poster(tmdbId):
+def get_poster(tmdbId, poster_size):
 
     if tmdbId == 'nan':  # if the tmdbId is nan, especially when get_random is called
         return 'None'
 
-    prefix = 'https://image.tmdb.org/t/p/w185'
+    if poster_size == 'large':
+        size = 'w500'
+    elif poster_size == 'small':
+        size = 'w185'
+    else:
+        size = 'w185'
+
+    prefix = 'https://image.tmdb.org/t/p/' + size
     tmdb_r = tmdb_query(tmdbId)
 
     if tmdb_r != 'None':

@@ -24,7 +24,7 @@ def get_random(request):
             continue
 
         movieId = movie_object.movieid
-        movie_dict = movie_builder(str(movieId))
+        movie_dict = movie_builder(str(movieId), poster_size='small')
         if movie_dict != 'None':
             response_dict['movies'].append(movie_dict)
 
