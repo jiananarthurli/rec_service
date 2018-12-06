@@ -13,3 +13,15 @@ class MovieList(models.Model):
     class Meta:
         managed = False
         db_table = 'movie_list'
+
+
+class MovieRatingsSelected(models.Model):
+    index = models.BigIntegerField(blank=True, null=True)
+    movieid = models.BigIntegerField(primary_key=True, db_column='movieId', blank=True, null=False)  # Field name made lowercase.
+    ratings = models.BigIntegerField(blank=True, null=True)
+    weight = models.FloatField(blank=True, null=True)
+    weight_c = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'movie_ratings_selected'
