@@ -13,7 +13,7 @@ def get_random(request):
     exclude = set()
     try:
         exclude_str = request.GET['exclude']
-        if exclude_str[-1] == ',':
+        if len(exclude_str) > 0 and exclude_str[-1] == ',':
             exclude = set(exclude_str[:-1].split(','))
         else:
             exclude = set(exclude_str.split(','))
