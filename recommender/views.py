@@ -27,7 +27,17 @@ def movie_builder(movieId, poster_size):
 
 def submit(request):
 
-    rec = 10
+    rec = 10  # total number of recommendations returned
+
+    exclude = set()
+    try:
+        exclude_str = request.GET['exclude']
+        if exclude_str[-1] == ',':
+            exclude = set(exclude_str[:-1].split(','))
+        else:
+            exclude = set(exclude_str.split(','))
+    except KeyError:
+        pass
 
     poster_size = request.GET['size']
     movie_list_str = request.GET['movies']
@@ -50,11 +60,11 @@ def submit(request):
 
     response_dict = {'movies': []}
     for i in result:
+        movieId = str(int(i))
         if len(response_dict['movies']) >= rec:
             break
-        if str(int(i)) not in picks:
-            m = str(int(i))  # movieId in string
-            movie_dict = movie_builder(m, poster_size)
+        if movieId not in picks and movieId not in exclude:
+            movie_dict = movie_builder(movieId, poster_size)
             if movie_dict != 'None':
                 response_dict['movies'].append(movie_dict)
 
