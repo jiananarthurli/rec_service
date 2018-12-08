@@ -78,7 +78,7 @@ def build_genres(genres_list):
 def submit(request):
 
     rec = 10  # total number of recommendations returned
-    threshold = 0.6826
+    threshold = 0.5
 
     exclude = set()
     try: # handle the case there exclude is not in the query
