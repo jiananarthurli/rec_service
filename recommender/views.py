@@ -114,11 +114,14 @@ def submit(request):
     # within "islands" in picks, and normalized by size of islands: sum(r_cp * r_pp) / count(r_pp)
     cp = movie_sim_beta.loc[candidate_index, picks]
     pp = movie_sim_beta.loc[pd.Index(map(int, picks)), picks]
-    cp_np = cp.values
-    pp_np = pp.values
-    pp_np_filter = pp_np > threshold
-    candidate_rate = pd.Series(np.nanmax(cp_np.dot(pp_np_filter * pp_np) / pp_np_filter.sum(axis=1), axis=1),
-                               index=cp.index)
+    # cp_np = cp.values
+    # pp_np = pp.values
+    # pp_np_filter = pp_np > threshold
+    # candidate_rate = pd.Series(np.nanmax(cp_np.dot(pp_np_filter * pp_np) / pp_np_filter.sum(axis=1), axis=1),
+    #                            index=cp.index)
+
+    # this is using simple averaging of CDF to get candidate matching
+    candidate_rate = cp.mean(axis=1)
 
     result = candidate_rate.sort_values(ascending=False).index.values
 
