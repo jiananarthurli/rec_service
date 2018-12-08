@@ -38,8 +38,9 @@ def get_tmdb_r(tmdbId, poster_size):
         return 'None', 'None'
 
     if poster_size == 'large':
-        # size = 'w500'
-        size = 'original'
+        size = 'w500'
+        # size = 'w780'
+        # size = 'original'
     elif poster_size == 'small':
         size = 'w185'
     else:
