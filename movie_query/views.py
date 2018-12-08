@@ -31,10 +31,11 @@ def tmdb_search(title):
         return str(r_results[0]['id'])
 
 
-def get_poster(tmdbId, poster_size):
+# def get_poster(tmdbId, poster_size):
+def get_tmdb_r(tmdbId, poster_size):
 
     if tmdbId == 'nan':  # if the tmdbId is nan, especially when get_random is called
-        return 'None'
+        return 'None', 'None'
 
     if poster_size == 'large':
         size = 'w500'
@@ -50,7 +51,7 @@ def get_poster(tmdbId, poster_size):
         poster_path = tmdb_r['poster_path']
 
         if poster_path is None:  # this happens when the poster path is None in the tmdb response.
-            return 'None'
+            return 'None', tmdb_r
 
     else:  # use searching to find the tmdbId instead
         movie_object = MovieList.objects.get(tmdbid=tmdbId)
@@ -58,20 +59,51 @@ def get_poster(tmdbId, poster_size):
         newId = tmdb_search(movie_title)
 
         if newId == 'None':  # even searching title in tmdb doesn't work
-            return 'None'
+            return 'None', tmdb_r
         else:
             tmdb_r = tmdb_query(newId)
             if tmdb_r == 'None':  # if for any reason the new id could not be found
-                return 'None'
+                return 'None', tmdb_r
             poster_path = tmdb_r['poster_path']
 
             if poster_path is None:  # this happens when the poster path is None in the tmdb response.
-                return 'None'
+                return 'None', tmdb_r
 
-    try:
-        str(poster_path)
-    except TypeError:
-        return 'None'
+    # try:
+    #     str(poster_path)
+    # except TypeError:
+    #     return 'None'
 
-    return prefix + poster_path
+    # return prefix + poster_path
 
+    if not isinstance(poster_path, str):
+        return 'None', tmdb_r
+
+    return prefix + poster_path, tmdb_r
+
+    #  tmdb_r fields:
+    #  'adult',
+    #  'backdrop_path',
+    #  'belongs_to_collection',
+    #  'budget',
+    #  'genres',
+    #  'homepage',
+    #  'id',
+    #  'imdb_id',
+    #  'original_language',
+    #  'original_title',
+    #  'overview',
+    #  'popularity',
+    #  'poster_path',
+    #  'production_companies',
+    #  'production_countries',
+    #  'release_date',
+    #  'revenue',
+    #  'runtime',
+    #  'spoken_languages',
+    #  'status',
+    #  'tagline',
+    #  'title',
+    #  'video',
+    #  'vote_average',
+    #  'vote_count'

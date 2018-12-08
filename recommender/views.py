@@ -4,20 +4,55 @@ from recommender.apps import movie_sim_beta, movie_norm, k_nearest
 import json
 import pandas as pd
 from movie_query.models import MovieList
-from movie_query.views import get_poster
+from movie_query.views import get_tmdb_r
 
 
 def movie_builder(movieId, poster_size):
 
     movie_object = MovieList.objects.get(movieid=movieId)
-    poster_path = get_poster(movie_object.tmdbid, poster_size)
+    poster_path, tmdb_r = get_tmdb_r(movie_object.tmdbid, poster_size)
+
     if poster_path != 'None':
+
+        try:
+            tmdb_title = str(tmdb_r['title'])
+        except KeyError:
+            tmdb_title = 'NA'
+
+        try:
+            imdb_id = str(tmdb_r['imdb_id'])
+        except KeyError:
+            imdb_id = 'NA'
+
+        try:
+            tmdb_runtime = str(tmdb_r['runtime'])
+        except KeyError:
+            tmdb_runtime = 'NA'
+
+        try:
+            tmdb_rating = str(tmdb_r['vote_average'])
+        except KeyError:
+            tmdb_rating = 'NA'
+
+        try:
+            tmdb_overview = str(tmdb_r['overview'])
+        except KeyError:
+            tmdb_overview = 'NA'
+
+        if tmdb_title == 'NA':
+            movie_title = movie_object.title
+        else:
+            movie_title = tmdb_title
+
         result = {'movieId': movieId,
-                  'title': movie_object.title,
+                  'title': movie_title,
                   'year': movie_object.year,
-                  'imdbId': movie_object.imdbid,
+                  'runtime': tmdb_runtime,
+                  'imdbId': imdb_id,
                   'tmdbId': movie_object.tmdbid,
-                  'poster': poster_path
+                  'tmdb_rating': tmdb_rating,
+                  'poster': poster_path,
+                  'overview': tmdb_overview
                   }
     else:
         result = 'None'
@@ -41,8 +76,10 @@ def submit(request):
 
     poster_size = request.GET['size']
     movie_list_str = request.GET['movies']
+
     if movie_list_str[-1] == ',':
         movie_list_str = movie_list_str[:-1]
+
     picks = movie_list_str.split(',')
 
     candidate = set()
@@ -60,6 +97,7 @@ def submit(request):
 
     response_dict = {'movies': []}
     for i in result:
+        print(i, candidate_rate.loc[i])
         movieId = str(int(i))
         if len(response_dict['movies']) >= rec:
             break
