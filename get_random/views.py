@@ -10,6 +10,8 @@ from django.core.exceptions import MultipleObjectsReturned
 
 def get_random(request):
 
+    movie_number = 9
+
     exclude = set()
     try:
         exclude_str = request.GET['exclude']
@@ -20,7 +22,6 @@ def get_random(request):
     except KeyError:
         pass
 
-    movie_number = 9
     max_weight_c = MovieRatingsSelected.objects.all().aggregate(Max('weight_c'))['weight_c__max']
 
     response_dict = {'movies': []}
