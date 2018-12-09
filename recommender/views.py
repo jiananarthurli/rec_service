@@ -75,10 +75,46 @@ def build_genres(genres_list):
     return genres
 
 
+def get_rec(picks):
+
+    candidate = set()
+    picks = set(picks)
+
+    for p in picks:
+        for i in k_nearest[p].values:
+            candidate.add(i)
+
+    # calculate potential ratings of the target user on the candidates
+    candidate_index = pd.Index(candidate)
+
+    candidate_rate = movie_sim_beta.loc[candidate_index, picks].sum(axis=1) / movie_norm[candidate_index]
+    candidate_match = movie_sim_beta.loc[candidate_index, picks].mean(axis=1)
+
+    # recommendation with candidate similarity CDF to picks weighted by similarity CDF,
+    # within "islands" in picks, and normalized by size of islands: sum(r_cp * r_pp) / count(r_pp)
+    # threshold = 0.5
+    # cp = movie_sim_beta.loc[candidate_index, picks]
+    # pp = movie_sim_beta.loc[pd.Index(map(int, picks)), picks]
+    # cp_np = cp.values
+    # pp_np = pp.values
+    # pp_np_filter = pp_np > threshold
+    # candidate_rate = pd.Series(np.nanmax(cp_np.dot(pp_np_filter * pp_np) / pp_np_filter.sum(axis=1), axis=1),
+    #                            index=cp.index)
+
+    # this is using simple averaging of CDF to get candidate matching
+    # candidate_rate = cp.mean(axis=1)
+
+    result = pd.DataFrame()
+    result['rate'] = candidate_rate
+    result['match'] = candidate_match
+    result = result.sort_values(by='rate', ascending=False)
+
+    return result
+
+
 def submit(request):
 
     rec = 10  # total number of recommendations returned
-    threshold = 0.5
 
     exclude = set()
     try: # handle the case there exclude is not in the query
@@ -98,43 +134,18 @@ def submit(request):
 
     picks = movie_list_str.split(',')
 
-    candidate = set()
-    picks = set(picks)
-
-    for p in picks:
-        for i in k_nearest[p].values:
-            candidate.add(i)
-
-    # calculate potential ratings of the target user on the candidates
-    candidate_index = pd.Index(candidate)
-
-    candidate_rate = movie_sim_beta.loc[candidate_index, picks].sum(axis=1) / movie_norm[candidate_index]
-    candidate_match = movie_sim_beta.loc[candidate_index, picks].mean(axis=1)
-
-    # recommendation with candidate similarity CDF to picks weighted by similarity CDF,
-    # within "islands" in picks, and normalized by size of islands: sum(r_cp * r_pp) / count(r_pp)
-    # cp = movie_sim_beta.loc[candidate_index, picks]
-    # pp = movie_sim_beta.loc[pd.Index(map(int, picks)), picks]
-    # cp_np = cp.values
-    # pp_np = pp.values
-    # pp_np_filter = pp_np > threshold
-    # candidate_rate = pd.Series(np.nanmax(cp_np.dot(pp_np_filter * pp_np) / pp_np_filter.sum(axis=1), axis=1),
-    #                            index=cp.index)
-
-    # this is using simple averaging of CDF to get candidate matching
-    # candidate_rate = cp.mean(axis=1)
-
-    result = candidate_rate.sort_values(ascending=False).index.values
+    result = get_rec(picks)
+    candidate_index = result.index
 
     response_dict = {'movies': []}
-    for i in result:
+    for i in candidate_index:
         movieId = str(int(i))
         if len(response_dict['movies']) >= rec:
             break
         if movieId not in picks and movieId not in exclude:
             movie_dict = movie_builder(movieId, poster_size)
             if movie_dict != 'None':
-                movie_dict['match'] = str(candidate_match.loc[i] * 100)
+                movie_dict['match'] = str(result.loc[i, 'match'] * 100)
                 response_dict['movies'].append(movie_dict)
 
     response = json.dumps(response_dict)

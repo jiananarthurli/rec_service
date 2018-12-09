@@ -1,9 +1,6 @@
 from django.shortcuts import render
 import requests
 from movie_query.models import MovieList
-# from bs4 import BeautifulSoup
-# import json
-# import re
 
 
 def tmdb_query(tmdbId):
@@ -31,7 +28,6 @@ def tmdb_search(title):
         return str(r_results[0]['id'])
 
 
-# def get_poster(tmdbId, poster_size):
 def get_tmdb_r(tmdbId, poster_size):
 
     if tmdbId == 'nan':  # if the tmdbId is nan, especially when get_random is called
@@ -70,13 +66,6 @@ def get_tmdb_r(tmdbId, poster_size):
 
             if poster_path is None:  # this happens when the poster path is None in the tmdb response.
                 return 'None', tmdb_r
-
-    # try:
-    #     str(poster_path)
-    # except TypeError:
-    #     return 'None'
-
-    # return prefix + poster_path
 
     if not isinstance(poster_path, str):
         return 'None', tmdb_r
