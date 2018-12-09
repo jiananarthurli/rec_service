@@ -49,6 +49,7 @@ def get_random(request):
         # then times rate_magnifier and convert to integer for easy sampling
         rec['rate_weighted_cumsum'] = cumsum((rec['rate'] * exp(rank_factor * rec.index.values) * rate_magnifier).apply(int).values)
         # print((rec['rate'] * exp(rank_factor * rec.index.values) * rate_magnifier).apply(int).values)
+
         max_rate_cumsum = rec['rate_weighted_cumsum'].iloc[-1]
 
     rec_size = len(rec)
