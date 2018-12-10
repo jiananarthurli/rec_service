@@ -19,6 +19,7 @@ from django.conf.urls import url, include
 
 from recommender.views import submit
 from get_random.views import get_random
+from get_poster.views import poster_small, poster_large
 
 
 urlpatterns = [
@@ -31,4 +32,9 @@ urlpatterns += [
 
 urlpatterns += [
     url(r'^get-random/$', get_random, name='get_random'),
+]
+
+urlpatterns += [
+    url(r'^poster-small/(?P<filename>.+)$', poster_small, name='poster_small'),
+    url(r'^poster-large/(?P<filename>.+)$', poster_large, name='poster_large'),
 ]

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'recommender.apps.RecommenderConfig',
     'movie_query.apps.MovieQueryConfig',
     'get_random.apps.GetRandomConfig',
+    'get_poster.apps.GetPosterConfig',
 ]
 
 MIDDLEWARE = [
