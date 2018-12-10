@@ -33,16 +33,29 @@ def get_tmdb_r(tmdbId, poster_size):
     if tmdbId == 'nan':  # if the tmdbId is nan, especially when get_random is called
         return 'None', 'None'
 
+    # if poster_size == 'large':
+    #     size = 'w500'
+    #     # size = 'w780'
+    #     # size = 'original'
+    # elif poster_size == 'small':
+    #     size = 'w185'
+    # else:
+    #     size = 'w185'
+
+    # prefix = 'https://image.tmdb.org/t/p/' + size
+
+    # use the digital ocean for poster image instead
     if poster_size == 'large':
-        size = 'w500'
+        size = 'poster-large'
         # size = 'w780'
         # size = 'original'
     elif poster_size == 'small':
-        size = 'w185'
+        size = 'poster-small'
     else:
-        size = 'w185'
+        size = 'poster-small'
 
-    prefix = 'https://image.tmdb.org/t/p/' + size
+    prefix = 'http://68.183.127.53/' + size
+
     tmdb_r = tmdb_query(tmdbId)
 
     if tmdb_r != 'None':
