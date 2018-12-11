@@ -4,7 +4,7 @@ from recommender.apps import movie_sim_beta, movie_norm, k_nearest
 import json
 import pandas as pd
 import numpy as np
-from movie_query.models import MovieList
+from movie_query.models import MovieList, MovieImdbRating
 from movie_query.views import get_tmdb_r
 
 
@@ -50,11 +50,15 @@ def movie_builder(movieId, poster_size):
         else:
             movie_title = tmdb_title
 
+        movie_imdb_rating_object = MovieImdbRating.objects.get(movieid=movieId)
+        imdb_rating = movie_imdb_rating_object.imdb_rating
+
         result = {'movieId': movieId,
                   'title': movie_title,
                   'year': movie_object.year,
                   'runtime': tmdb_runtime,
                   'imdbId': imdb_id,
+                  'imdb_rating': imdb_rating,
                   'tmdbId': movie_object.tmdbid,
                   'tmdb_rating': tmdb_rating,
                   'poster': poster_path,

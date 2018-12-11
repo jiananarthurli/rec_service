@@ -47,8 +47,6 @@ def get_tmdb_r(tmdbId, poster_size):
     # use the digital ocean for poster image instead
     if poster_size == 'large':
         size = 'poster-large'
-        # size = 'w780'
-        # size = 'original'
     elif poster_size == 'small':
         size = 'poster-small'
     else:
