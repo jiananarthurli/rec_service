@@ -14,7 +14,10 @@ def get_random(request):
     movie_number = 9
     database_size = 5000
     rate_magnifier = 100000
-    rec_size_factor = 20
+    rec_size_factor = 20 * 4
+    # 20 will have one movie for one pick. I need this to converge fast so people choose more,
+    # or at least feel that the engine understand him/her.
+
     rank_factor = -0.05
 
     exclude = set()

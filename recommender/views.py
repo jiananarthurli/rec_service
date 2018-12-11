@@ -121,7 +121,7 @@ def submit(request):
     rec = 10  # total number of recommendations returned
 
     exclude = set()
-    try: # handle the case there exclude is not in the query
+    try:  # handle the case there exclude is not in the query
         exclude_str = request.GET['exclude']
         if len(exclude_str) > 0 and exclude_str[-1] == ',':
             exclude = set(exclude_str[:-1].split(','))
