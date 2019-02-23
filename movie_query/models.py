@@ -28,7 +28,7 @@ class MovieRatingsSelected(models.Model):
 
 
 class MoviePosters(models.Model):
-    movieid = models.BigIntegerField(primary_key=True, db_column='movieId', blank=True, null=False)  # Field name made lowercase.
+    movieid = models.BigIntegerField(db_column='movieId', primary_key=True)  # Field name made lowercase.
     filename = models.TextField(blank=True, null=True)
 
     class Meta:

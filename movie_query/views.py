@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import requests
-from movie_query.models import MovieList
+from movie_query.models import MovieList, MoviePosters
 
 
 def tmdb_query(tmdbId):
@@ -26,6 +26,14 @@ def tmdb_search(title):
         return 'None'
     else:
         return str(r_results[0]['id'])
+
+
+def get_poster_filename(tmdbId):
+    movie_list_object = MovieList.objects.get(tmdbid=tmdbId)
+    movieId = movie_list_object.movieid
+    movie_poster_object = MoviePosters.objects.get(movieid=movieId)
+    poster_filename = movie_poster_object.filename
+    return poster_filename
 
 
 def get_tmdb_r(tmdbId, poster_size):
@@ -57,31 +65,43 @@ def get_tmdb_r(tmdbId, poster_size):
     tmdb_r = tmdb_query(tmdbId)
 
     if tmdb_r != 'None':
-        poster_path = tmdb_r['poster_path']
+        # poster_path = tmdb_r['poster_path']
+        # if poster_path is None:  # this happens when the poster path is None in the tmdb response.
+        #     return 'None', tmdb_r
 
-        if poster_path is None:  # this happens when the poster path is None in the tmdb response.
+        # tmdb movie poster paths change over time.
+        # Switch to local psql query for movie poster paths.
+
+        poster_file_name = get_poster_filename(tmdbId)
+
+        if poster_file_name == 'None':  # this happens when the poster path is None in the tmdb response.
             return 'None', tmdb_r
 
     else:  # use searching to find the tmdbId instead
-        movie_object = MovieList.objects.get(tmdbid=tmdbId)
-        movie_title = movie_object.title
+        movie_list_object = MovieList.objects.get(tmdbid=tmdbId)
+        movie_title = movie_list_object.title
         newId = tmdb_search(movie_title)
 
         if newId == 'None':  # even searching title in tmdb doesn't work
-            return 'None', tmdb_r
+            return 'None', 'None'
         else:
             tmdb_r = tmdb_query(newId)
             if tmdb_r == 'None':  # if for any reason the new id could not be found
+                return 'None', 'None'
+            # poster_path = tmdb_r['poster_path'] # change the poster filename query to local
+            # if poster_path is None:  # this happens when the poster path is None in the tmdb response.
+            #     return 'None', tmdb_r
+            poster_file_name = get_poster_filename(tmdbId)
+            if poster_file_name == 'None':  # this happens when the poster path is None in the tmdb response.
                 return 'None', tmdb_r
-            poster_path = tmdb_r['poster_path']
 
-            if poster_path is None:  # this happens when the poster path is None in the tmdb response.
-                return 'None', tmdb_r
+    # if not isinstance(poster_file_name, str):
+    #     return 'None', tmdb_r
 
-    if not isinstance(poster_path, str):
+    if poster_file_name == 'None':
         return 'None', tmdb_r
 
-    return prefix + poster_path, tmdb_r
+    return prefix + poster_file_name, tmdb_r
 
     #  tmdb_r fields:
     #  'adult',
