@@ -65,12 +65,6 @@ def get_tmdb_r(tmdbId, poster_size):
     tmdb_r = tmdb_query(tmdbId)
 
     if tmdb_r != 'None':
-        # poster_path = tmdb_r['poster_path']
-        # if poster_path is None:  # this happens when the poster path is None in the tmdb response.
-        #     return 'None', tmdb_r
-
-        # tmdb movie poster paths change over time.
-        # Switch to local psql query for movie poster paths.
 
         poster_file_name = get_poster_filename(tmdbId)
 
@@ -88,15 +82,9 @@ def get_tmdb_r(tmdbId, poster_size):
             tmdb_r = tmdb_query(newId)
             if tmdb_r == 'None':  # if for any reason the new id could not be found
                 return 'None', 'None'
-            # poster_path = tmdb_r['poster_path'] # change the poster filename query to local
-            # if poster_path is None:  # this happens when the poster path is None in the tmdb response.
-            #     return 'None', tmdb_r
             poster_file_name = get_poster_filename(tmdbId)
             if poster_file_name == 'None':  # this happens when the poster path is None in the tmdb response.
                 return 'None', tmdb_r
-
-    # if not isinstance(poster_file_name, str):
-    #     return 'None', tmdb_r
 
     if poster_file_name == 'None':
         return 'None', tmdb_r
